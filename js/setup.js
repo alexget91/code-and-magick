@@ -10,6 +10,14 @@
   var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
 
 
+  var fillElement = function (element, color) {
+    element.style.fill = color;
+  };
+
+  var changeElementBackground = function (element, color) {
+    element.style.backgroundColor = color;
+  };
+
   var renderWizard = function (template, wizard) {
 
     var wizardElement = template.cloneNode(true);
@@ -57,18 +65,10 @@
   similarListElement.appendChild(fragment);
   setup.querySelector('.setup-similar').classList.remove('hidden');
 
-
-  window.colorize(setupWizardCoat, currCoatColor, COAT_COLORS, function (color) {
-    setupWizardCoat.style.fill = color;
-  });
-
-  window.colorize(setupWizardEyes, currEyeColor, EYE_COLORS, function (color) {
-    setupWizardEyes.style.fill = color;
-  });
-
-  window.colorize(setupWizardFireball, currFireballColor, FIREBALL_COLORS, function (color) {
-    setupWizardFireball.style.backgroundColor = color;
-  });
+  // Смена цветов экипировки
+  window.colorizeElement(setupWizardCoat, currCoatColor, COAT_COLORS, fillElement);
+  window.colorizeElement(setupWizardEyes, currEyeColor, EYE_COLORS, fillElement);
+  window.colorizeElement(setupWizardFireball, currFireballColor, FIREBALL_COLORS, changeElementBackground);
 
 
   // Перетаскивание предметов в окне настроек
