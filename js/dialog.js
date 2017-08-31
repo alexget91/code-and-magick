@@ -8,6 +8,7 @@
   var setupClose = setup.querySelector('.setup-close');
   var setupHandle = setup.querySelector('.setup-user .upload');
   var setupForm = setup.querySelector('.setup-wizard-form');
+  var setupAvatar = setup.querySelector('.setup-user .upload input[name="avatar"]');
 
   var openPopup = function () {
     setup.classList.remove('hidden');
@@ -36,8 +37,6 @@
   var onSaveSuccess = function () {
     closePopup();
   };
-
-  setup.querySelector('.setup-user .upload input[name="avatar"]').classList.add('hidden'); // временно, чтобы не мешал
 
 
   setupOpen.addEventListener('click', function () {
@@ -85,10 +84,14 @@
 
       setup.style.top = (setup.offsetTop - shift.y) + 'px';
       setup.style.left = (setup.offsetLeft - shift.x) + 'px';
+
+      setupAvatar.classList.add('hidden');
     };
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
+
+      setupAvatar.classList.remove('hidden');
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
