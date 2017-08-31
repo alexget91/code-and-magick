@@ -3,50 +3,9 @@
 // Модуль управления настройками персонажа
 (function () {
 
-  var WIZARD_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-  var WIZARD_LASTNAMES = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
   var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
   var EYE_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
   var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
-
-
-  var fillElement = function (element, color) {
-    element.style.fill = color;
-  };
-
-  var changeElementBackground = function (element, color) {
-    element.style.backgroundColor = color;
-  };
-
-  var renderWizard = function (template, wizard) {
-
-    var wizardElement = template.cloneNode(true);
-
-    wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
-
-    return wizardElement;
-  };
-
-  var createWizard = function (data, template, fragment) {
-    for (var i = 0; i < data.length; i++) {
-      fragment.appendChild(renderWizard(template, data[i]));
-    }
-  };
-
-
-  var wizards = [];
-  for (var i = 0; i < 4; i++) {
-    var name = WIZARD_NAMES[window.util.getRandomInt(0, WIZARD_NAMES.length)];
-    var lastname = WIZARD_LASTNAMES[window.util.getRandomInt(0, WIZARD_LASTNAMES.length)];
-    wizards[i] = {
-      name: window.util.getRandomInt(0, 2) ? name + ' ' + lastname : lastname + ' ' + name,
-      coatColor: COAT_COLORS[window.util.getRandomInt(0, COAT_COLORS.length)],
-      eyesColor: EYE_COLORS[window.util.getRandomInt(0, EYE_COLORS.length)]
-    };
-  }
-
 
   var setup = document.querySelector('.setup');
   var setupWizardCoat = setup.querySelector('.setup-wizard .wizard-coat');
@@ -59,11 +18,45 @@
 
   var similarListElement = setup.querySelector('.setup-similar-list');
   var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
-  var fragment = document.createDocumentFragment();
 
-  createWizard(wizards, similarWizardTemplate, fragment);
-  similarListElement.appendChild(fragment);
-  setup.querySelector('.setup-similar').classList.remove('hidden');
+  var fillElement = function (element, color) {
+    element.style.fill = color;
+  };
+
+  var changeElementBackground = function (element, color) {
+    element.style.backgroundColor = color;
+  };
+
+  var renderWizard = function (wizard) {
+
+    var wizardElement = similarWizardTemplate.cloneNode(true);
+
+    wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
+
+    return wizardElement;
+  };
+
+  var onLoadSuccess = function (wizards) {
+    var fragment = document.createDocumentFragment();
+
+    var objWizardKeys = {};
+    while (Object.keys(objWizardKeys).length < 4) {
+      var item = window.util.getRandomInt(0, wizards.length);
+      objWizardKeys[item] = true;
+    }
+    var wizardKeys = Object.keys(objWizardKeys);
+
+    for (var i = 0; i < wizardKeys.length; i++) {
+      fragment.appendChild(renderWizard(wizards[wizardKeys[i]]));
+    }
+    similarListElement.appendChild(fragment);
+    setup.querySelector('.setup-similar').classList.remove('hidden');
+  };
+
+
+  window.backend.load(onLoadSuccess, window.backend.onLoadError);
 
   // Смена цветов экипировки
   window.colorizeElement(setupWizardCoat, currCoatColor, COAT_COLORS, fillElement);
@@ -79,7 +72,7 @@
   var artifactsElementCells = artifactsElement.querySelectorAll('.setup-artifacts-cell');
 
   var showDragCells = function () {
-    for (i = 0; i < artifactsElementCells.length; i++) {
+    for (var i = 0; i < artifactsElementCells.length; i++) {
       if (!artifactsElementCells[i].children.length) {
         artifactsElementCells[i].style.outline = '2px dashed red';
       }
@@ -87,7 +80,7 @@
   };
 
   var hideDragCells = function () {
-    for (i = 0; i < artifactsElementCells.length; i++) {
+    for (var i = 0; i < artifactsElementCells.length; i++) {
       artifactsElementCells[i].style.outline = '';
     }
   };
