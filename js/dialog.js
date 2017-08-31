@@ -6,8 +6,9 @@
   var setup = document.querySelector('.setup');
   var setupOpen = document.querySelector('.setup-open');
   var setupClose = setup.querySelector('.setup-close');
-  var setupSave = setup.querySelector('.setup-submit');
   var setupHandle = setup.querySelector('.setup-user .upload');
+  var setupForm = setup.querySelector('.setup-wizard-form');
+  var setupAvatar = setup.querySelector('.setup-user .upload input[name="avatar"]');
 
   var openPopup = function () {
     setup.classList.remove('hidden');
@@ -33,7 +34,9 @@
     window.util.isEscEvent(evt, makeEscAction);
   };
 
-  setup.querySelector('.setup-user .upload input[name="avatar"]').classList.add('hidden'); // временно, чтобы не мешал
+  var onSaveSuccess = function () {
+    closePopup();
+  };
 
 
   setupOpen.addEventListener('click', function () {
@@ -52,12 +55,9 @@
     window.util.isEnterEvent(evt, closePopup);
   });
 
-  setupSave.addEventListener('click', function () {
-    closePopup();
-  });
-
-  setupSave.addEventListener('keydown', function (evt) {
-    window.util.isEnterEvent(evt, closePopup);
+  setupForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(setupForm), onSaveSuccess, window.backend.onLoadError);
+    evt.preventDefault();
   });
 
   // Перетаскивание окна настроек
@@ -84,10 +84,14 @@
 
       setup.style.top = (setup.offsetTop - shift.y) + 'px';
       setup.style.left = (setup.offsetLeft - shift.x) + 'px';
+
+      setupAvatar.classList.add('hidden');
     };
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
+
+      setupAvatar.classList.remove('hidden');
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
