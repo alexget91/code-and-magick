@@ -11,7 +11,7 @@
     getRandomInt: function (min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
     },
-    // Получает следующий элемент массива (циклически)
+    // Получает индекс следующего элемента массива (циклически)
     getNextItem: function (counter, arr) {
       if (++counter >= arr.length) {
         counter = 0;
@@ -29,4 +29,5 @@
       }
     }
   };
+
 })();
