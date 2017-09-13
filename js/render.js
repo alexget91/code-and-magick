@@ -3,7 +3,9 @@
 // Модуль отрисовки похожих персонажей
 (function () {
 
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
+  var SHOW_WIZARDS_NUMBER = 4; // count
+
+  var similarWizardTemplate = document.querySelector('#similar-wizard-template');
   var similar = document.querySelector('.setup-similar');
   var similarList = document.querySelector('.setup-similar-list');
 
@@ -13,13 +15,13 @@
     }).join('<br>');
   };
 
-  var renderWizard = function (wizard) {
-    var element = similarWizardTemplate.cloneNode(true);
+  var createElement = function (wizard) {
+    var element = similarWizardTemplate.content.cloneNode(true);
     var wizardElement = element.querySelector('.wizard');
 
     element.querySelector('.setup-similar-label').textContent = wizard.name;
-    element.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
-    element.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
 
     window.popup(wizardElement, function () {
       return renderWizardArtifacts(wizard);
@@ -31,12 +33,11 @@
 
   window.render = function (data) {
     var fragment = document.createDocumentFragment();
-    var takeNumber = data.length > 4 ? 4 : data.length;
-
     similarList.innerHTML = '';
-    for (var i = 0; i < takeNumber; i++) {
-      fragment.appendChild(renderWizard(data[i]));
-    }
+
+    data.slice(0, SHOW_WIZARDS_NUMBER).forEach(function (wizard) {
+      fragment.appendChild(createElement(wizard));
+    });
 
     similarList.appendChild(fragment);
     similar.classList.remove('hidden');
