@@ -46,7 +46,7 @@
 
 
   window.myWizard.onChange = function () {
-    updateFilter();
+    window.debounce(updateFilter);
   };
 
   window.backend.load(onLoadSuccess, window.backend.onLoadError);

@@ -56,8 +56,23 @@
   });
 
   setupForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(setupForm), onSaveSuccess, window.backend.onLoadError);
     evt.preventDefault();
+
+    window.backend.save(new FormData(setupForm), onSaveSuccess, window.backend.onLoadError);
+
+    var wizardCopy = document.querySelector('svg').cloneNode(true);
+    var wizardElement = document.querySelector('.setup-wizard');
+
+    wizardCopy.querySelector('#wizard-coat').style.fill = wizardElement.querySelector('.wizard-coat').style.fill;
+    wizardCopy.querySelector('#wizard-eyes').style.fill = wizardElement.querySelector('.wizard-eyes').style.fill;
+
+    var wizardBase64Right = window.svg2base64(wizardCopy); // работает только в Chrome
+
+    // Чтобы развернуть мага, его надо подвинуть на его ширину, а затем отразить
+    wizardCopy.querySelector('#wizard').setAttribute('transform', 'translate(62, 0) scale(-1, 1)');
+    var wizardBase64Left = window.svg2base64(wizardCopy);
+
+    window.restartGame(wizardBase64Right, wizardBase64Left);
   });
 
   // Перетаскивание окна настроек
